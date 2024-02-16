@@ -161,8 +161,13 @@ class AppDelegate: NSObject, NSApplicationDelegate, AVCapturePhotoCaptureDelegat
     }
     
     func sendImageToOllamaAPI(imageBase64String: String) {
-        guard let url = URL(string: "http://localhost:11434/api/generate") else { return }
         
+        guard let baseServerURLString = UserDefaults.standard.string(forKey: "serverBaseURL"),
+                  let baseURL = URL(string: baseServerURLString),
+                  let url = URL(string: "/api/generate", relativeTo: baseURL) else {
+                print("Invalid or missing server base URL.")
+                return
+            }
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
