@@ -11,6 +11,7 @@ https://github.com/ollama/ollama
 
 ### Settings window
 Click on the RBF icon on the top menu bar then click 'Settings'. 
+</br>
 <img width="484" alt="Screenshot 2024-02-15 at 9 21 26 PM" src="https://github.com/siggalucci13/RBFDetector/assets/122421623/971715b2-3b92-4a11-87c3-1bef6a405038">
 
 ## Start Capture
