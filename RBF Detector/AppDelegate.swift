@@ -49,7 +49,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, AVCapturePhotoCaptureDelegat
         isCapturing.toggle()
         if isCapturing {
             print("Capturing")
-            let interval = UserDefaults.standard.double(forKey: "captureInterval") ?? 10.0
+            let interval = 10.0
             startTimer(interval: interval)
         } else {
             timer?.invalidate()
@@ -162,8 +162,9 @@ class AppDelegate: NSObject, NSApplicationDelegate, AVCapturePhotoCaptureDelegat
     
     func sendImageToOllamaAPI(imageBase64String: String) {
         
-        guard let baseServerURLString = UserDefaults.standard.string(forKey: "serverBaseURL"),
-                  let baseURL = URL(string: baseServerURLString),
+        let baseServerURLString = UserDefaults.standard.string(forKey: "serverURL") ?? "Not Found"
+            
+            guard let baseURL = URL(string: baseServerURLString),
                   let url = URL(string: "/api/generate", relativeTo: baseURL) else {
                 print("Invalid or missing server base URL.")
                 return
@@ -171,7 +172,7 @@ class AppDelegate: NSObject, NSApplicationDelegate, AVCapturePhotoCaptureDelegat
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        let prompt = "Analyze the emotion displayed by the person in the provided image, focusing on key facial features such as the positioning and shape of the eyes, mouth, and the presence of any wrinkles. Interpret these features to estimate the person's emotion. For example, a smiling mouth or raised corners of the eyes may suggest 'happy', while drooping eyelids could indicate 'sleepy'. Recognize that determining emotion is subjective and based on the visible cues. Please categorize your analysis into one of the following options based on your estimation: 'happy', 'sad', 'bored', 'sleepy', or 'expressionless'. Ensure to return only one of these options as your one word response."
+        let prompt = "Analyze the emotion displayed by the person in the provided image, focusing on key facial features such as the positioning and shape of the eyes, mouth, and the presence of any wrinkles. Interpret these features to estimate the person's emotion. For example, a smiling mouth or raised corners of the eyes may suggest 'happy', while drooping eyelids could indicate 'sleepy'. Recognize that determining emotion is subjective and based on the visible cues. Please categorize your analysis into one of the following options based on your estimation: 'happy', 'sad', 'bored', 'sleepy', or 'expressionless'. Ensure to return only one of these options as your one word response and nothing else."
         let requestBody: [String: Any] = [
             "model": "llava",
             "prompt": prompt,
@@ -214,10 +215,12 @@ class AppDelegate: NSObject, NSApplicationDelegate, AVCapturePhotoCaptureDelegat
             systemSymbolName = "SadIcon"
         case "sleepy":
             systemSymbolName = "SleepyIcon"
-        case "no expression":
+        case "expressionless":
+            systemSymbolName = "NoExpIcon"
+        case "bored":
             systemSymbolName = "NoExpIcon"
         default:
-            systemSymbolName = "NoExpIcon"
+            systemSymbolName = "MenuIconMain"
         }
         
         if let button = self.statusBarItem.button {
